@@ -11,12 +11,13 @@ module.exports.consume = async event => {
     const payload = messageData.payload;
     const eventType = messageData.eventType || null;
     const url = messageData.url;
+    const headerName = process.env.HEADER_NAME || 'Shotstack';
 
     const config = {
         headers: {
-            'X-Shotstack-Event-Type': eventType,
-            'X-Shotstack-Attempt': messageData.attempt || 1,
-            'User-Agent': 'Shotstack-Webhook/1.0',
+            ['X-' + headerName + '-Event-Type']: eventType,
+            ['X-' + headerName + '-Attempt']: messageData.attempt || 1,
+            'User-Agent': headerName + '-Webhook/1.0',
             'Content-Type': 'application/json'
         }
     }
