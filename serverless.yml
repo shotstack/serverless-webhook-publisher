@@ -1,0 +1,94 @@
+service: webhook-publish
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-prune-plugin
+  - serverless-stage-manager
+
+custom:
+  awsAccount: ${env:AWS_ACCOUNT_ID}
+  stages:
+    - dev
+    - stage
+    - v1
+  prune:
+    automatic: true
+    includeLayers: true
+    number: 5
+  queue:
+    primary: ${self:service}-${opt:stage, self:provider.stage}-primary
+    primary-dlq: ${self:service}-${opt:stage, self:provider.stage}-primary--DLQ
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: ap-southeast-2
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:GetQueueUrl"
+      Resource:
+        - "arn:aws:sqs:${self:provider.region}:${self:custom.awsAccount}:${self:custom.queue.primary}"
+        - "arn:aws:sqs:${self:provider.region}:${self:custom.awsAccount}:${self:custom.queue.primary-dlq}"
+    - Effect: "Allow"
+      Action:
+        - "sqs:ListQueues"
+      Resource: "arn:aws:sqs:${self:provider.region}:${self:custom.awsAccount}:*"
+  environment:
+    SLS_REGION: ${opt:region, self:provider.region}
+    SLS_AWS_ACCOUNT: ${self:custom.awsAccount}
+    SLS_SQS_QUEUE_PRIMARY: ${self:custom.queue.primary}
+    MOCK_SUBSCRIBER_RESPONSE_CODE: 200
+
+package:
+  individually: true
+  exclude:
+     - .env
+     - README.md
+     - package.json
+     - package-lock.json
+     - node_modules/.bin/**
+     - node_modules/aws-sdk/**
+     - node_modules/**/aws-sdk/**
+     - node_modules/serverless/**
+
+functions:
+  worker:
+    handler: src/worker.consume
+    description: Post webhook callbacks and handle retries
+    timeout: 20
+    memorySize: 128
+    events:
+      - sqs:
+          arn: "arn:aws:sqs:${self:provider.region}:${self:custom.awsAccount}:${self:custom.queue.primary}"
+          batchSize: 1
+  subscriber:
+    handler: src/subscriber.subscribe
+    description: Webhook mock subscriber to receive and log posted callbacks
+    timeout: 10
+    memorySize: 128
+    events:
+      - http:
+          path: mock-subscriber
+          method: post
+
+resources:
+  Resources:
+    PrimaryQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "${self:custom.queue.primary}"
+        VisibilityTimeout: 60
+        RedrivePolicy:
+          deadLetterTargetArn:
+            "Fn::GetAtt":
+              - PrimaryDeadLetterQueue
+              - Arn
+          maxReceiveCount: 5
+    PrimaryDeadLetterQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "${self:custom.queue.primary-dlq}"
+        MessageRetentionPeriod: 1209600
