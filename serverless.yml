@@ -58,7 +58,7 @@ functions:
   worker:
     handler: src/worker.consume
     description: Post webhook callbacks and handle retries
-    timeout: 20
+    timeout: 15
     memorySize: 128
     events:
       - sqs:
