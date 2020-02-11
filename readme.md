@@ -18,11 +18,18 @@ If not, follow the [Serverless Installation Guide](https://serverless.com/framew
 
 The [serverless.yaml](serverless.yaml) file needs to know your 12 digit [AWS Account ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html#FindingYourAWSId).
 
-Copy the `.env.dist` file and rename it to `.env` and then insert your ID next to `AWS_ACCOUNT_ID=`
+Copy the `.env.dist` file and rename it to `.env`
 
 ```
 cp .env.dist .env
 ```
+
+Edit the .env file and insert your AWS ID next to `AWS_ACCOUNT_ID=`
+
+### Modify header name
+
+The POST callback uses a custom headers to which can be prefixed with your project or service name. Just edit the 
+.env file and change `HEADER_NAME`
 
 ### Install dependencies
 
