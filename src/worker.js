@@ -24,6 +24,8 @@ module.exports.consume = async event => {
     }
 
     try {
+        console.log('Sending callback to: ', url);
+        console.log('Payload: ', payload);
         const response = await axios.post(url, payload, config);
 
         if (response.status < 200 || response.status >= 400) {
