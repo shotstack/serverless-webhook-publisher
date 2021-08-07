@@ -2,8 +2,8 @@
 
 ### A simple service for publishing and retrying webhook POSTs to a 3rd party callback URL.
 
-Uses AWS Lambda, SQS and the Serverless Framework. A Consumer receives messages 
-from SQS with a payload which it POST's to a callback URL. If the callback POST fails then the message is requeued with an exponential back-off delay.
+Uses AWS Lambda, SQS and the Serverless Framework. A Consumer receives messages from SQS with a payload which it POST's
+to a callback URL. If the callback POST fails then the message is requeued with an exponential back-off delay.
 
 -----
 
@@ -30,6 +30,12 @@ Edit the .env file and insert your AWS ID next to `AWS_ACCOUNT_ID=`
 
 The POST callback uses a custom headers to which can be prefixed with your project or service name. Just edit the 
 .env file and change `HEADER_NAME`
+
+### Add deployment bucket prefix
+
+A deployment bucket centralises all your Serverless deployments in to a single bucket in S3 rather than creating a new
+bucket for each Serverless project and each environment. Make sure the bucket exists, create it if it does not. The
+deployment will append the region to the bucket prefix. Edit the .env file and change `DEPLOY_BUCKET_PREFIX`.
 
 ### Install dependencies
 

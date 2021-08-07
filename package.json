@@ -9,11 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "sqs-producer": "^1.6.3"
   },
   "devDependencies": {
-    "serverless-dotenv-plugin": "^2.3.1",
     "serverless-prune-plugin": "^1.4.1",
     "serverless-stage-manager": "^1.0.5"
   }
