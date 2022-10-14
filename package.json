@@ -4,15 +4,19 @@
   "description": "Webhook publish service using AWS Lambda and SQS",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sls": "serverless",
+    "deploy": "serverless deploy",
+    "deploy:function": "serverless deploy function -f "
   },
-  "author": "",
+  "author": "Shotstack",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
     "sqs-producer": "^1.6.3"
   },
   "devDependencies": {
+    "serverless": "^3.23.0",
     "serverless-prune-plugin": "^1.4.1",
     "serverless-stage-manager": "^1.0.5"
   }

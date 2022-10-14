@@ -9,14 +9,22 @@ to a callback URL. If the callback POST fails then the message is requeued with 
 
 ## Setup
 
+### Prerequisites
+
+- Node.js 16
+- AWS Account
+
 ### Serverless Framework
 
-Ensure the Serverless Framework is setup and configured with AWS credentials.
-If not, follow the [Serverless Installation Guide](https://serverless.com/framework/docs/providers/aws/guide/installation/).
+The Serverless Framework is used to deploy the application to AWS Lambda. A local version is installed as a dev 
+dependency using NPM. Follow the Serverless AWS credentials
+[setup guide](https://www.serverless.com/framework/docs/providers/aws/guide/credentials) to ensure access to AWS is
+configured correctly.
 
 ### Add AWS Account ID
 
-The [serverless.yaml](serverless.yaml) file needs to know your 12 digit [AWS Account ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html#FindingYourAWSId).
+The [serverless.yaml](serverless.yaml) file needs to know your 12 digit [AWS Account ID]
+(https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html#FindingYourAWSId).
 
 Copy the `.env.dist` file and rename it to `.env`
 
@@ -28,16 +36,18 @@ Edit the .env file and insert your AWS ID next to `AWS_ACCOUNT_ID=`
 
 ### Modify header name
 
-The POST callback uses a custom headers to which can be prefixed with your project or service name. Just edit the 
+The POST callback uses a custom headers which can be prefixed with your project or service name. Just edit the 
 .env file and change `HEADER_NAME`
 
 ### Add deployment bucket prefix
 
-A deployment bucket centralises all your Serverless deployments in to a single bucket in S3 rather than creating a new
+A deployment bucket centralizes all your Serverless deployments in to a single bucket in S3 rather than creating a new
 bucket for each Serverless project and each environment. Make sure the bucket exists, create it if it does not. The
 deployment will append the region to the bucket prefix. Edit the .env file and change `DEPLOY_BUCKET_PREFIX`.
 
 ### Install dependencies
+
+Install project dependencies including a local installation of the Serverless Framework
 
 ```
 npm install
@@ -45,14 +55,16 @@ npm install
 
 ### Deploy
 
+Deploys to the `dev` environment by default.
+
 ```
-serverless deploy
+npm run deploy
 ```
 
 To deploy to a particular staging environment:
 
 ```
-serverless deploy --stage [dev|stage|v1]
+npm run deploy -- --stage [dev|stage|v1]
 ```
 
 Note: the deployment uses the 

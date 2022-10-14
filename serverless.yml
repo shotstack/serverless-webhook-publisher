@@ -21,13 +21,18 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs16.x
   stage: dev
   region: ap-southeast-2
   logRetentionInDays: 30
   deploymentBucket:
     name: ${env:DEPLOY_BUCKET_PREFIX}-${self:provider.region}
     blockPublicAccess: true
+  stackTags:
+    service: ${self:service}
+    env: ${opt:stage, self:provider.stage}
+    version: ${env:VERSION_NUMBER, 0}
+
   iamRoleStatements:
     - Effect: "Allow"
       Action:
