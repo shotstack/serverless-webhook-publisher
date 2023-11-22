@@ -83,14 +83,14 @@ is used to prune old versions of Lambda functions. Edit or remove these in the
 The worker is a Lambda function that listens for messages in an SQS queue.
 
 When a message is received it will try to post the message payload to the provided 
-callback URL. If it fails if fails it attempts to requeue the message with a delay 
+callback URL. If it fails, it attempts to requeue the message with a delay 
 until the maximum amount of retries is exceeded.
 
 ### Subscriber ([src/subscriber.js](src/subscriber.js))
 
 The subscriber is provided as an example only. The subscriber receives the POSTed 
 callback data and does something with it (i.e. update a database based on a value 
-in the payload. The subscriber should be an external system somewhere on the 
+in the payload). The subscriber should be an external system somewhere on the 
 internet.
 
 A `MOCK_SUBSCRIBER_RESPONSE_CODE` environment variable is available that can be 
